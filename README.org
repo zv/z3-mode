@@ -1,8 +1,8 @@
 * Configuration                                                       :TOC@4:
    - [[#introduction][Introduction]]
    - [[#manual-installation][Manual Installation]]
-   - [[#packageel-installation-via-melpa][=package.el= installation via MELPA]]
-     - [[#install-z3-mode][Install =z3-mode=]]
+   - [[#packageel-installation-via-melpa][~package.el~ installation via MELPA]]
+     - [[#install-z3-mode][Install ~z3-mode~]]
 
 ** Introduction
 ~z3-mode~ provides an interactive development environment for checking the
@@ -17,7 +17,7 @@ To install manually, check out this repository and add the following to your
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . z3-mode))
 #+end_src
 
-** =package.el= installation via MELPA
+** ~package.el~ installation via MELPA
 It can be more convenient to use Emacs's package manager to handle installation
 for you if you use many elisp libraries. If you have package.el but haven't
 added MELPA, the community package source, yet, add this to ~/.emacs.d/init.el:
@@ -30,6 +30,7 @@ added MELPA, the community package source, yet, add this to ~/.emacs.d/init.el:
 Then do this to load the package listing:
 
 ~M-x eval-buffer~
+
 ~M-x package-refresh-contents~
 
 If you use a version of Emacs prior to 24 that doesn't include package.el, you
@@ -40,8 +41,8 @@ upgrade in order to support installation from multiple sources. The ELPA archive
 is deprecated and no longer accepting new packages, so the version there (1.7.1)
 is very outdated.
 
-*** Install =z3-mode=
-One you have package.el, you can install z3-mode or any other modes by
+*** Install ~z3-mode~
+One you have package.el, you can install ~z3-mode~ or any other modes by
 choosing them from a list:
 
 ~M-x package-list-packages~ 
