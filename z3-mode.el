@@ -22,9 +22,33 @@
 
 ;;; Commentary:
 
-;; A major mode for interacting with the z3 theorem prover
+;; An interactive development environment for SMT-LIB files and Z3. Z3 and
+;; Contessa as well as various SMTLIB supporting theorem provers & solvers are
+;; supported. Structured statements can be inserted and ran with C-c
 
 ;;; Code:
+
+(defgroup z3 nil
+  "Z3/SMT script Mode"
+  :group 'languages
+  :prefix "z3-")
+
+(defcustom z3-mode-solver-cmd "/home/zv/Development/z3/build/z3"
+  "The command used when you run the solver
+
+The following solvers are currently supported
+- Z3
+"
+  :type 'file
+  :group 'z3)
+
+(defcustom z3-mode-input-format "smt2"
+  "The input format"
+  :group 'z3
+  :options '(("SMTLIBv1" "smt")
+             ("SMTLIBv2" "smt2")
+             ("Datalog" "dl")
+             ("DIMACS" "dimacs")))
 
 (defvar z3-mode-map
   (let ((map (make-sparse-keymap)))
@@ -34,12 +58,16 @@
 ;;;; Font-lock support.
 ;; Matches alternative base numeric primitives such as `#xF0FA' & `#b010'
 (defconst z3-altbase-literal-regexp "\\(#x[0-9a-fA-F]+\\|#b[01]+\\)")
+
 ; Matches the simplest symbol regexp format
 (defconst z3-symbol-regexp "[a-zA-Z~!@$%^&*_+=<>.?/-][0-9a-zA-Z~!@$%^&*_+=<>.?/-]*")
+
 ;; Matches an alternative quote symbol regexp format
 (defconst z3-quoted-symbol-regexp "|[]!-[^-{}~ \t\r\n]*|")
+
 ;; Matches lisp-symbol style keywords, i.e `:keyword'
 (defconst z3-keyword-symbol-regexp ":[0-9a-zA-Z~!@$%^&*_+=<>.?/-]+")
+
 ;; Z3 commands as keywords
 (defvar z3-keywords '("apply" "assert" "assert-soft" "check-sat" "check-sat-using"
                       "compute-interpolant" "declare-const" "declare-datatypes" "declare-fun"
@@ -75,7 +103,6 @@
   (setq font-lock-defaults z3-font-lock-defaults))
 
 ;; Default to run SMT solver
-(defvar z3-solver-cmd "/home/zv/Development/z3/build/z3 -smt2  " "Command to run SMT solver")
 
 ;; Command to run SMT solver on the whole buffer
 (defun run-solver ()
