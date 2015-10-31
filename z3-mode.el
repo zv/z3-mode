@@ -27,6 +27,7 @@
 ;; supported. Structured statements can be inserted and ran with C-c
 
 ;;; Code:
+(require 'flycheck)
 
 (defgroup z3 nil
   "Z3/SMT script Mode"
@@ -101,6 +102,17 @@ The following solvers are currently supported
 
   ;; code for syntax highlighting
   (setq font-lock-defaults z3-font-lock-defaults))
+
+(defvar z3-solver-flycheck "/home/zv/Development/z3/build/z3")
+;; Setup Syntax Checking
+(flycheck-define-checker z3-smt2-lint
+  "A syntax and style checker for SMTLIBv2 with Z3"
+  :command ("/home/zv/Development/z3/build/z3"
+            "-v:1" "-smt2"
+            source)
+  :error-patterns
+  ((error "error \"line " line " column " column ": " (message) "\")"))
+  :modes z3-mode)
 
 ;; Default to run SMT solver
 
