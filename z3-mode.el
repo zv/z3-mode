@@ -3,7 +3,7 @@
 ;; Version: 0.0.1
 ;; Author: Zephyr Pellerin <zephyr.pellerin@gmail.com>
 ;; Homepage: https://github.com/zv/z3-mode
-;; Keywords: z3 yices smt
+;; Keywords: z3 yices mathsat smt
 
 ;; This file is not part of GNU Emacs.
 
@@ -50,24 +50,21 @@ Z3"
              ("Datalog" "dl")
              ("DIMACS" "dimacs")))
 
-(defvar z3-mode-map ;; Matches alternative base numeric primitives such as `#xF0FA' & `#b010'
-  @@ -81,11 +92,10 @@ The following solvers are currently supported
-     "set-option" "simplify"))
+(defcustom z3-builtins
+  '((z3 sh-append smtlib2
+        "check-sat-using"))
+  "List of solver specific builtins and keywords.
+Note that on some systems and builds, not all are available.")
 
-;; Define our font-lock
--(setq z3-keywords-regexp (regexp-opt z3-keywords 'words))
-+(defvar z3-keywords-regexp (regexp-opt z3-keywords 'words))
-
--(setq z3-font-lock-defaults
--      `((
-          -         (,(regexp-opt z3-keywords 'words) . font-lock-keyword-face)
-                    +(defvar z3-font-lock-defaults
-                       +      `(((,(regexp-opt z3-keywords 'words) .
+(defvar z3-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c C-c") 'run-solver) map)
-  "Keymap for z3-mode")
+    (define-key map (kbd "C-c C-c") 'z3-execute-region) map)
 
-;;;; Font-lock support.
+  "Keymap for z3-mode.")
+
+
+;; font-lock support
+
 ;; Matches alternative base numeric primitives such as `#xF0FA' & `#b010'
 (defconst z3-altbase-literal-regexp "\\(#x[0-9a-fA-F]+\\|#b[01]+\\)")
 
@@ -92,18 +89,21 @@ Z3"
                       "set-option" "simplify"))
 
 ;; Define our font-lock
-(setq z3-keywords-regexp (regexp-opt z3-keywords 'words))
+(defvar z3-keywords-regexp (regexp-opt z3-keywords 'words))
 
-(setq z3-font-lock-defaults
-      `((
-         (,(regexp-opt z3-keywords 'words) . font-lock-keyword-face)
+(defvar z3-font-lock-defaults
+      `(((,(regexp-opt z3-keywords 'words) . font-lock-keyword-face)
          (,z3-keyword-symbol-regexp . font-lock-builtin-face)
          (,z3-altbase-literal-regexp . font-lock-constant-face)
          ;; We *can* highlight symbols, but it compromises the clarity
          ;; (,z3-symbol-regexp . font-lock-function-name-face)
          )))
 
+
+;; mode-command and utility functions
+
 ;; Define the mode
+;;;###autoload
 (define-derived-mode z3-mode lisp-mode "Z3/SMT2"
   "Major mode for editing Z3 files"
 
@@ -115,9 +115,21 @@ Z3"
   (setq font-lock-defaults z3-font-lock-defaults))
 
 ;; Setup Syntax Checking
+;; Command to run SMT solver on the whole buffer
+(defun z3-execute-region ()
+  "Pass optional header and region to a prover for noninteractive execution.
+The working directory is that of the buffer, and only environment variables
+are already set which is why you can mark a header within the script."
+  (interactive)
+  (shell-command-on-region (if (region-active-p) (region-beginning) (point-min))
+                           (if (region-active-p) (region-end) (point-max))
+                           (concat z3-solver-cmd " -in")))
 
-;; Setup the executable configuration group
-;;; Setup the flycheck specific customize group
+
+
+;;; syntax and checker
+
+;; Setup the flycheck specific customize group
 (defcustom flycheck-z3-smt2-lint-executable nil
   (format "The executable of the z3-smt2-lint syntax checker.
 
@@ -136,18 +148,10 @@ The default executable is %S." z3-solver-cmd)
   "A syntax and style checker for SMTLIBv2 with Z3"
   :command `(,z3-solver-cmd "-v:1" "-smt2" source)
   :error-patterns
+  ;; Error pattern of the form `(error "line X column Y: message)`
   '((error "error \"line " line " column " column ": " (message) "\")"))
   :modes 'z3-mode)
 
-;; Command to run SMT solver on the whole buffer
-(defun z3-execute-region ()
-  "Pass optional header and region to a prover for noninteractive execution.
-The working directory is that of the buffer, and only environment variables
-are already set which is why you can mark a header within the script."
-  (interactive)
-  (shell-command-on-region (if (region-active-p) (region-beginning) (point-min))
-                           (if (region-active-p) (region-end) (point-max))
-                           (concat z3-solver-cmd " -in")))
 
 (provide 'z3-mode)
 
