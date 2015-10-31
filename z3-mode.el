@@ -34,24 +34,35 @@
   :group 'languages
   :prefix "z3-")
 
-(defcustom z3-mode-solver-cmd "/home/zv/Development/z3/build/z3"
-  "The command used when you run the solver
+(defcustom z3-solver-cmd "/home/zv/Development/z3/build/z3"
+  "The command used when you run the solver.
 
 The following solvers are currently supported
-- Z3
-"
+Z3"
   :type 'file
   :group 'z3)
 
-(defcustom z3-mode-input-format "smt2"
-  "The input format"
+(defcustom z3-input-format "smt2"
+  "The input format."
   :group 'z3
   :options '(("SMTLIBv1" "smt")
              ("SMTLIBv2" "smt2")
              ("Datalog" "dl")
              ("DIMACS" "dimacs")))
 
-(defvar z3-mode-map
+(defvar z3-mode-map ;; Matches alternative base numeric primitives such as `#xF0FA' & `#b010'
+  @@ -81,11 +92,10 @@ The following solvers are currently supported
+     "set-option" "simplify"))
+
+;; Define our font-lock
+-(setq z3-keywords-regexp (regexp-opt z3-keywords 'words))
++(defvar z3-keywords-regexp (regexp-opt z3-keywords 'words))
+
+-(setq z3-font-lock-defaults
+-      `((
+          -         (,(regexp-opt z3-keywords 'words) . font-lock-keyword-face)
+                    +(defvar z3-font-lock-defaults
+                       +      `(((,(regexp-opt z3-keywords 'words) .
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-c") 'run-solver) map)
   "Keymap for z3-mode")
@@ -129,13 +140,15 @@ The default executable is %S." z3-solver-cmd)
   :modes 'z3-mode)
 
 ;; Command to run SMT solver on the whole buffer
-(defun run-solver ()
-  "Run the SMT solver on the buffer "
+(defun z3-execute-region ()
+  "Pass optional header and region to a prover for noninteractive execution.
+The working directory is that of the buffer, and only environment variables
+are already set which is why you can mark a header within the script."
   (interactive)
-  (shell-command-on-region
-   (if (region-active-p) (region-beginning) (point-min))
-   (if (region-active-p) (region-end) (point-max))
-   (read-shell-command "Run SMT solver: " (concat z3-solver-cmd " " (buffer-file-name)))
-   "SMT Solver Output"))
+  (shell-command-on-region (if (region-active-p) (region-beginning) (point-min))
+                           (if (region-active-p) (region-end) (point-max))
+                           (concat z3-solver-cmd " -in")))
 
 (provide 'z3-mode)
+
+;;; z3-mode ends here
