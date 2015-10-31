@@ -103,18 +103,30 @@ The following solvers are currently supported
   ;; code for syntax highlighting
   (setq font-lock-defaults z3-font-lock-defaults))
 
-(defvar z3-solver-flycheck "/home/zv/Development/z3/build/z3")
 ;; Setup Syntax Checking
-(flycheck-define-checker z3-smt2-lint
-  "A syntax and style checker for SMTLIBv2 with Z3"
-  :command ("/home/zv/Development/z3/build/z3"
-            "-v:1" "-smt2"
-            source)
-  :error-patterns
-  ((error "error \"line " line " column " column ": " (message) "\")"))
-  :modes z3-mode)
 
-;; Default to run SMT solver
+;; Setup the executable configuration group
+;;; Setup the flycheck specific customize group
+(defcustom flycheck-z3-smt2-lint-executable nil
+  (format "The executable of the z3-smt2-lint syntax checker.
+
+Either a string containing the name or the path of the
+executable, or nil to use the default executable from the syntax
+checker declaration.
+
+The default executable is %S." z3-solver-cmd)
+  :type '(choice (const :tag "Default executable" nil)
+                 (string :tag "Name or path"))
+  :group 'flycheck-executables
+  :risky t)
+
+;; Configure the command checker
+(flycheck-define-command-checker 'z3-smt2-lint
+  "A syntax and style checker for SMTLIBv2 with Z3"
+  :command `(,z3-solver-cmd "-v:1" "-smt2" source)
+  :error-patterns
+  '((error "error \"line " line " column " column ": " (message) "\")"))
+  :modes 'z3-mode)
 
 ;; Command to run SMT solver on the whole buffer
 (defun run-solver ()
