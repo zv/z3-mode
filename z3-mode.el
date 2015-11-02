@@ -51,8 +51,21 @@ Z3"
              ("DIMACS" "dimacs")))
 
 (defcustom z3-builtins
-  '((z3 sh-append smtlib2
-        "check-sat-using"))
+  '((z3/smtlib2 sh-append smtlib2
+                "check-sat-using"
+                "declare-var"
+                "declare-rel"
+                "rule"
+                "query"
+                "set-predicate-representation"
+                ;; Z3Opt
+                "maximize"
+                "minimize"
+                "assert-soft"
+                "assert-weighted"
+                ;; iZ3
+                "compute-interpolant"
+                ))
   "List of solver specific builtins and keywords.
 Note that on some systems and builds, not all are available.")
 
