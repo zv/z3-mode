@@ -1,9 +1,10 @@
-;;; z3-mode.el -- A z3/SMTLIBv2 interactive development environment -*-lexical-binding: t-*-
+;;; z3-mode.el --- A z3/SMTLIBv2 interactive development environment -*-lexical-binding: t-*-
 
 ;; Version: 0.0.1
 ;; Author: Zephyr Pellerin <zephyr.pellerin@gmail.com>
 ;; Homepage: https://github.com/zv/z3-mode
 ;; Keywords: z3 yices mathsat smt beaver
+;; Package-Requires: ((flycheck "0.23") (emacs "24"))
 
 ;; This file is not part of GNU Emacs.
 
@@ -169,4 +170,4 @@ The default executable is %S." z3-solver-cmd)
 
 (provide 'z3-mode)
 
-;;; z3-mode ends here
+;;; z3-mode.el ends here
