@@ -4,6 +4,7 @@
 ;; Author: Zephyr Pellerin <zephyr.pellerin@gmail.com>
 ;; Homepage: https://github.com/zv/z3-mode
 ;; Keywords: z3 yices mathsat smt beaver
+;; Package-Requires: ((flycheck "0.23") (emacs "24"))
 
 ;; This file is not part of GNU Emacs.
 
