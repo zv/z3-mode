@@ -1,4 +1,4 @@
-;;; z3-mode.el -- A z3/SMTLIBv2 interactive development environment -*-lexical-binding: t-*-
+;;; z3-mode.el --- A z3/SMTLIBv2 interactive development environment -*-lexical-binding: t-*-
 
 ;; Version: 0.0.1
 ;; Author: Zephyr Pellerin <zephyr.pellerin@gmail.com>
@@ -169,4 +169,4 @@ The default executable is %S." z3-solver-cmd)
 
 (provide 'z3-mode)
 
-;;; z3-mode ends here
+;;; z3-mode.el ends here
