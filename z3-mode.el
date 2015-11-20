@@ -120,9 +120,7 @@ Note that on some systems and builds, not all are available.")
 (define-derived-mode z3-mode lisp-mode "Z3/SMT2"
   "Major mode for editing Z3 files"
 
-  (setq auto-mode-alist
-        (append
-         '(("\\.smt[2]?$" . z3-mode)) auto-mode-alist))
+  
 
   ;; code for syntax highlighting
   (setq font-lock-defaults z3-font-lock-defaults))
@@ -165,6 +163,9 @@ The default executable is %S." z3-solver-cmd)
   '((error "error \"line " line " column " column ": " (message) "\")"))
   :modes 'z3-mode)
 
+(setq auto-mode-alist
+      (append
+       '(("\\.smt[2]?$" . z3-mode)) auto-mode-alist))
 
 (provide 'z3-mode)
 
