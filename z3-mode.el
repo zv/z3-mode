@@ -35,7 +35,7 @@
   :group 'languages
   :prefix "z3-")
 
-(defcustom z3-solver-cmd "/home/zv/Development/z3/build/z3"
+(defcustom z3-solver-cmd (executable-find "z3")
   "The command used when you run the solver.
 
 The following solvers are currently supported
