@@ -164,6 +164,7 @@ The default executable is %S." z3-solver-cmd)
   '((error "error \"line " line " column " column ": " (message) "\")"))
   :modes 'z3-mode)
 
+;;;###autoload
 (setq auto-mode-alist
       (append
        '(("\\.smt[2]?$" . z3-mode)) auto-mode-alist))
